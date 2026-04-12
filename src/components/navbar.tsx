@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
+import { Menu, X, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ContactModal } from "@/components/contact-modal";
 
@@ -70,6 +70,15 @@ export function Navbar() {
                 {l.label}
               </Link>
             ))}
+            <a
+              href="https://wa.me/447407748717?text=Hi%20DreamBridge%20Edu%2C%20I%27m%20interested%20in%20studying%20abroad.%20Can%20you%20help%3F"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 bg-[#25D366] hover:bg-[#1ebe57] text-white text-sm font-semibold px-[18px] py-2.5 rounded-lg transition-all hover:-translate-y-px no-underline"
+            >
+              <MessageCircle className="w-4 h-4" />
+              WhatsApp
+            </a>
             <Button
               onClick={() => setModalOpen(true)}
               className="bg-brand-500 hover:bg-brand-600 text-white text-sm font-semibold px-[22px] py-2.5 rounded-lg transition-all hover:-translate-y-px"
@@ -105,6 +114,16 @@ export function Navbar() {
                 {l.label}
               </Link>
             ))}
+            <a
+              href="https://wa.me/447407748717?text=Hi%20DreamBridge%20Edu%2C%20I%27m%20interested%20in%20studying%20abroad.%20Can%20you%20help%3F"
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={() => setMobileOpen(false)}
+              className="flex items-center gap-2 text-[15px] font-semibold px-6 py-3.5 border-b border-border text-[#25D366] no-underline"
+            >
+              <MessageCircle className="w-4 h-4" />
+              WhatsApp Us
+            </a>
             <button
               onClick={() => {
                 setModalOpen(true);

@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef } from "react";
+import { useForm, ValidationError } from "@formspree/react";
 import { Button } from "@/components/ui/button";
 import { Send } from "lucide-react";
 
@@ -10,14 +11,7 @@ interface ContactModalProps {
 }
 
 export function ContactModal({ open, onClose }: ContactModalProps) {
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    phone: "",
-    destination: "",
-    message: "",
-  });
-  const [submitted, setSubmitted] = useState(false);
+  const [state, handleSubmit, reset] = useForm("mojrndnd");
   const modalRef = useRef<HTMLDivElement>(null);
 
   // Close on Escape
@@ -42,18 +36,16 @@ export function ContactModal({ open, onClose }: ContactModalProps) {
     };
   }, [open]);
 
-  const handleSubmit = useCallback(
-    (e: React.FormEvent) => {
-      e.preventDefault();
-      setSubmitted(true);
-      setTimeout(() => {
-        setSubmitted(false);
+  // Auto-close after successful submission
+  useEffect(() => {
+    if (state.succeeded) {
+      const timer = setTimeout(() => {
+        reset();
         onClose();
-        setForm({ name: "", email: "", phone: "", destination: "", message: "" });
-      }, 2000);
-    },
-    [onClose]
-  );
+      }, 2500);
+      return () => clearTimeout(timer);
+    }
+  }, [state.succeeded, onClose, reset]);
 
   if (!open) return null;
 
@@ -81,7 +73,7 @@ export function ContactModal({ open, onClose }: ContactModalProps) {
           Fill out the form and our advisors will reach out within 24 hours.
         </p>
 
-        {submitted ? (
+        {state.succeeded ? (
           <div className="text-center py-10">
             <div className="text-5xl mb-3">✓</div>
             <p className="text-lg text-brand-500 font-semibold">
@@ -90,31 +82,39 @@ export function ContactModal({ open, onClose }: ContactModalProps) {
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="flex flex-col gap-3.5">
-            {[
-              { key: "name", label: "Full Name", type: "text" },
-              { key: "email", label: "Email Address", type: "email" },
-              { key: "phone", label: "Phone Number", type: "tel" },
-            ].map((f) => (
-              <input
-                key={f.key}
-                type={f.type}
-                placeholder={f.label}
-                required
-                value={form[f.key as keyof typeof form]}
-                onChange={(e) =>
-                  setForm({ ...form, [f.key]: e.target.value })
-                }
-                className="text-[15px] px-4 py-3 border-[1.5px] border-border rounded-[10px] outline-none transition-colors focus:border-brand-500 bg-white"
-              />
-            ))}
+            <input
+              type="text"
+              name="name"
+              placeholder="Full Name"
+              required
+              className="text-[15px] px-4 py-3 border-[1.5px] border-border rounded-[10px] outline-none transition-colors focus:border-brand-500 bg-white"
+            />
+            <ValidationError prefix="Name" field="name" errors={state.errors} className="text-xs text-red-500 -mt-2" />
+
+            <input
+              type="email"
+              name="email"
+              placeholder="Email Address"
+              required
+              className="text-[15px] px-4 py-3 border-[1.5px] border-border rounded-[10px] outline-none transition-colors focus:border-brand-500 bg-white"
+            />
+            <ValidationError prefix="Email" field="email" errors={state.errors} className="text-xs text-red-500 -mt-2" />
+
+            <input
+              type="tel"
+              name="phone"
+              placeholder="Phone Number"
+              className="text-[15px] px-4 py-3 border-[1.5px] border-border rounded-[10px] outline-none transition-colors focus:border-brand-500 bg-white"
+            />
+
             <select
-              value={form.destination}
-              onChange={(e) =>
-                setForm({ ...form, destination: e.target.value })
-              }
+              name="destination"
+              defaultValue=""
               className="text-[15px] px-4 py-3 border-[1.5px] border-border rounded-[10px] outline-none bg-white text-muted-foreground focus:border-brand-500"
             >
-              <option value="">Preferred Destination</option>
+              <option value="" disabled>
+                Preferred Destination
+              </option>
               {[
                 "UK",
                 "Canada",
@@ -129,21 +129,22 @@ export function ContactModal({ open, onClose }: ContactModalProps) {
                 </option>
               ))}
             </select>
+
             <textarea
+              name="message"
               placeholder="Your Message"
-              value={form.message}
-              onChange={(e) =>
-                setForm({ ...form, message: e.target.value })
-              }
               rows={3}
               className="text-[15px] px-4 py-3 border-[1.5px] border-border rounded-[10px] outline-none resize-y focus:border-brand-500 bg-white"
             />
+            <ValidationError prefix="Message" field="message" errors={state.errors} className="text-xs text-red-500 -mt-2" />
+
             <Button
               type="submit"
-              className="mt-1 bg-brand-500 hover:bg-brand-600 text-white text-base font-semibold py-3.5 rounded-[10px] h-auto"
+              disabled={state.submitting}
+              className="mt-1 bg-brand-500 hover:bg-brand-600 text-white text-base font-semibold py-3.5 rounded-[10px] h-auto disabled:opacity-60"
             >
               <Send className="w-4 h-4 mr-2" />
-              Submit Inquiry
+              {state.submitting ? "Sending…" : "Submit Inquiry"}
             </Button>
           </form>
         )}

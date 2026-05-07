@@ -30,16 +30,14 @@ export function Navbar() {
       <ContactModal open={modalOpen} onClose={() => setModalOpen(false)} />
 
       <nav
-        className={`fixed top-0 left-0 right-0 z-[900] transition-all duration-300 px-[clamp(20px,5vw,80px)] ${
-          scrolled
-            ? "bg-white/97 backdrop-blur-md border-b border-black/[0.06]"
-            : "bg-transparent"
-        }`}
+        className={`fixed top-0 left-0 right-0 z-[900] transition-all duration-300 px-[clamp(20px,5vw,80px)] ${scrolled
+          ? "bg-white/97 backdrop-blur-md border-b border-black/[0.06]"
+          : "bg-transparent"
+          }`}
       >
         <div
-          className={`max-w-[1200px] mx-auto flex items-center justify-between transition-all duration-300 ${
-            scrolled ? "h-16" : "h-[72px]"
-          }`}
+          className={`max-w-[1200px] mx-auto flex items-center justify-between transition-all duration-300 ${scrolled ? "h-16" : "h-[72px]"
+            }`}
         >
           {/* Logo */}
           <Link
@@ -61,11 +59,10 @@ export function Navbar() {
               <Link
                 key={l.label}
                 href={l.href}
-                className={`text-[14.5px] font-medium tracking-[0.2px] transition-colors hover:text-brand-500 no-underline ${
-                  scrolled
-                    ? "text-foreground"
-                    : "text-white/85"
-                }`}
+                className={`text-[14.5px] font-medium tracking-[0.2px] transition-colors hover:text-brand-500 no-underline ${scrolled
+                  ? "text-foreground"
+                  : "text-white/85"
+                  }`}
               >
                 {l.label}
               </Link>
@@ -91,9 +88,8 @@ export function Navbar() {
           <div className="lg:hidden">
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className={`bg-transparent border-none cursor-pointer text-2xl ${
-                scrolled ? "text-navy" : "text-white"
-              }`}
+              className={`bg-transparent border-none cursor-pointer text-2xl ${scrolled ? "text-navy" : "text-white"
+                }`}
               aria-label="Toggle menu"
             >
               {mobileOpen ? <X /> : <Menu />}
